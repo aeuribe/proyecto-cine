@@ -7,65 +7,54 @@ class PreviewPelicula(tk.Toplevel):
         super().__init__(master)
         self.app = app
         self.pelicula = pelicula
+        self.configure(bg="#222222")
 
         self.title(f"Vista Previa: {pelicula['titulo']}")
         self.style = style
 
-        self.configure(background=self.style.lookup(".", "background"))
+
         self.style.configure("Preview.TLabel", font=("Helvetica", 14), wraplength=400, background="#222222", foreground="#EEEEEE")
-        self.style.configure("TButton", font=("Helvetica", 16, "bold"), background="#333333", foreground="#FF0000")
-    
-        ancho_ventana = 500
-        alto_ventana = 600
-        self.geometry(f"{ancho_ventana}x{alto_ventana}")
+        self.style.configure("TButton", font=("Helvetica", 16, "bold"), background="#333333", foreground="#800020")
+        
+        self.minsize(800, 600)
 
-        self.after(100, lambda: self.app.centrar_ventana(self))
-
-        main_frame = ttk.Frame(self)
-        main_frame.grid(row=0, column=0, sticky="nsew")
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=1)
+        # Obtener el tamaño de la pantalla
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        ancho_ventana = int(screen_width * 0.5)
+        alto_ventana = int(screen_height * 0.75)
+        
+        # Centrar la ventana en la pantalla
+        x_pos = (screen_width - ancho_ventana) // 2
+        y_pos = (screen_height - alto_ventana) // 2
+        self.geometry(f"{ancho_ventana}x{alto_ventana}+{x_pos}+{y_pos}")
 
         imagen_path = pelicula["imagen"]
-        try:
-            imagen = Image.open(imagen_path)
-            imagen = imagen.resize((ancho_ventana - 40, 400), Image.LANCZOS)
-            photo = ImageTk.PhotoImage(imagen)
-            label_imagen = ttk.Label(main_frame, image=photo, style="Preview.TLabel")
-            label_imagen.image = photo
-            label_imagen.grid(row=0, column=0, columnspan=2, pady=10)
-        except FileNotFoundError:
-            ttk.Label(main_frame, text="Imagen no encontrada", style="Preview.TLabel").grid(row=0, column=0, columnspan=2, pady=10)
+        imagen = Image.open(imagen_path)
+        imagen.thumbnail((ancho_ventana - 40, int(alto_ventana * 0.6)))  # No distorsionar la imagen, solo ajustar su tamaño
+        photo = ImageTk.PhotoImage(imagen)
+        label_imagen = ttk.Label(self, image=photo, style="Preview.TLabel")
+        label_imagen.image = photo
+        label_imagen.pack(pady=10)
 
-        ttk.Label(main_frame, text=f"Título: {pelicula['titulo']}", style="Preview.TLabel").grid(row=1, column=0, columnspan=2, pady=5)
-        ttk.Label(main_frame, text=f"Género: {pelicula['genero']}", style="Preview.TLabel").grid(row=2, column=0, columnspan=2, pady=5)
-        ttk.Label(main_frame, text=f"Duración: {pelicula['duracion']}", style="Preview.TLabel").grid(row=3, column=0, columnspan=2, pady=5)
+        ttk.Label(self, text=f"Título: {pelicula['titulo']}", style="Preview.TLabel").pack(pady=5)
+        ttk.Label(self, text=f"Género: {pelicula['genero']}", style="Preview.TLabel").pack(pady=5)
+        ttk.Label(self, text=f"Duración: {pelicula['duracion']}", style="Preview.TLabel").pack(pady=5)
 
-        frame_sinopsis = ttk.Frame(main_frame)
-        frame_sinopsis.grid(row=4, column=0, columnspan=2, pady=10, sticky="nsew")
-        main_frame.grid_rowconfigure(4, weight=1)
+        ttk.Button(self, text="Reservar", command=self.master.mostrar_asientos_disponibles, style="TButton").pack(side="left", padx=5, pady=10)
+        ttk.Button(self, text="Cerrar", command=self.withdraw, style="TButton").pack(side="right", padx=5, pady=10)
 
-        canvas_sinopsis = tk.Canvas(frame_sinopsis)
-        canvas_sinopsis.pack(side="left", fill="both", expand=True)
 
-        scrollbar_sinopsis = ttk.Scrollbar(frame_sinopsis, orient="vertical", command=canvas_sinopsis.yview)
-        scrollbar_sinopsis.pack(side="right", fill="y")
-
-        canvas_sinopsis.configure(yscrollcommand=scrollbar_sinopsis.set)
-        canvas_sinopsis.bind("<Configure>", lambda e: canvas_sinopsis.configure(scrollregion=canvas_sinopsis.bbox("all")))
-
-        frame_interno_sinopsis = ttk.Frame(canvas_sinopsis)
-        canvas_sinopsis.create_window((0, 0), window=frame_interno_sinopsis, anchor="nw")
-
-        label_sinopsis = ttk.Label(frame_interno_sinopsis, text=f"Sinopsis: {pelicula['sinopsis']}", style="Preview.TLabel", wraplength=ancho_ventana - 60)
-        label_sinopsis.pack(pady=10)
-
-        frame_botones = ttk.Frame(main_frame)
-        frame_botones.grid(row=5, column=0, columnspan=2, pady=10)
-
-        ttk.Button(frame_botones, text="Volver", command=self.withdraw).grid(row=0, column=0, padx=5)
-        ttk.Button(frame_botones, text="Comprar", command=self.comprar_pelicula).grid(row=0, column=1, padx=5)
-
-    def comprar_pelicula(self):
-        # Aquí puedes definir la funcionalidad que deseas para el botón "Comprar"
-        print(f"Comprando la película: {self.pelicula['titulo']}")
+if __name__ == "__main__":
+    root = tk.Tk()
+    pelicula = {
+        "titulo": "Ejemplo de Película",
+        "genero": "Acción",
+        "duracion": "120 minutos",
+        "sinopsis": "Esta es la sinopsis de la película.",
+        "imagen": "ruta/a/imagen.jpg"  # Reemplaza con la ruta real de la imagen
+    }
+    style = ttk.Style(root)
+    app = None  # Aquí deberías pasar la instancia de tu aplicación principal
+    preview = PreviewPelicula(root, pelicula, style, app)
+    root.mainloop()

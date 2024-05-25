@@ -50,19 +50,29 @@ class Cartelera(tk.Toplevel):
             label_nombre = ttk.Label(self, text=pelicula["titulo"], font=("Roboto Light", 14))
             label_nombre.grid(row=3, column=i, pady=(0, 10))
 
-        self.crear_boton_volver()
+        self.crear_boton_cerrar()
 
-    def crear_boton_volver(self):
-        ttk.Button(self, text="Volver al Menú", command=self.volver_al_menu).grid(row=4, column=0, columnspan=len(self.peliculas), pady=20)
+    def crear_boton_cerrar(self):
+        # Frame para los botones en la parte inferior
+        botones_frame = tk.Frame(self, bg="#222222")
+        botones_frame.grid(row=4, column=0, columnspan=len(self.peliculas), pady=20)
 
-    def volver_al_menu(self):
-        self.destroy()
-        self.app.deiconify()
-        self.app.open_menu_principal()
+        # Botón "Cerrar"
+        boton_cerrar = tk.Button(
+            botones_frame,
+            text="Cerrar",
+            command=self.on_closing,
+            bg="#333333",
+            fg="white",
+            font=("Helvetica", 16, "bold"),
+            bd=0,
+            relief=tk.FLAT
+        )
+        boton_cerrar.pack(side=tk.LEFT, padx=10)
 
     def on_closing(self):
         self.destroy()
-        self.app.deiconify()
+        self.app.open_menu_principal()
 
 if __name__ == "__main__":
     app = tk.Tk()

@@ -3,6 +3,7 @@ from tkinter import ttk, messagebox
 from menu_principal import MenuPrincipal
 from cartelera import Cartelera
 from preview import PreviewPelicula
+from asientos_disponibles import AsientosDisponibles
 import sqlite3
 
 class LoginApp(tk.Tk):
@@ -16,7 +17,7 @@ class LoginApp(tk.Tk):
         self.style.configure("TLabel", foreground="white", background="#222222", font=("Helvetica", 16))
         self.style.configure("TEntry", foreground="black", font=("Helvetica", 16))
         self.style.configure("TButton", font=("Helvetica", 16, "bold"), background="#444444", foreground="white")
-        self.style.map("TButton", background=[("active", "#666666")], foreground=[("active", "white")])
+        self.style.map("TButton", background=[("active", "#666666")], foreground=[("active", "#222222")])
         self.style.configure("TFrame", background="#222222")
 
         self.create_widgets()
@@ -81,6 +82,12 @@ class LoginApp(tk.Tk):
         y = (screen_height - window_height) // 2
 
         ventana.geometry(f"+{x}+{y}")
+
+    def mostrar_asientos_disponibles(self):
+        #self.withdraw()
+        asientos_disponibles = AsientosDisponibles(self)
+        asientos_disponibles.protocol("WM_DELETE_WINDOW", self.on_closing)
+
 
     def on_closing(self):
         self.destroy()
