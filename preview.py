@@ -63,7 +63,7 @@ class PreviewPelicula(tk.Toplevel):
         frame_botones = ttk.Frame(main_frame)
         frame_botones.grid(row=5, column=0, columnspan=2, pady=10)
 
-        ttk.Button(frame_botones, text="Volver al Menú", command=self.withdraw).grid(row=0, column=0, padx=5)
+        ttk.Button(frame_botones, text="Volver", command=self.withdraw).grid(row=0, column=0, padx=5)
         ttk.Button(frame_botones, text="Comprar", command=self.comprar_pelicula).grid(row=0, column=1, padx=5)
 
     def comprar_pelicula(self):
