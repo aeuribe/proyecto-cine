@@ -4,27 +4,24 @@ from PIL import Image, ImageTk
 
 
 class PreviewPelicula(tk.Toplevel):
-    def __init__(self, master, pelicula, style, app):  # Añadir app como argumento
+    def __init__(self, master, pelicula, style, app):
         super().__init__(master)
-        self.app = app  # Almacenar referencia a la aplicación para centrar ventana
+        self.app = app  
+        self.pelicula = pelicula 
 
         self.title(f"Vista Previa: {pelicula['titulo']}")
         self.style = style
 
-        # Configurar estilo de la ventana (similar a MenuPrincipal)
         self.configure(background=self.style.lookup(".", "background"))
         self.style.configure("Preview.TLabel", font=("Helvetica", 14), wraplength=400, background="#222222", foreground="#EEEEEE")
         self.style.configure("TButton", font=("Helvetica", 16, "bold"), background="#333333", foreground="#FF0000")
     
-        # Dimensiones de la ventana
         ancho_ventana = 500
         alto_ventana = 600
         self.geometry(f"{ancho_ventana}x{alto_ventana}")
 
-        # Centrar la ventana después de establecer las dimensiones (usando el método de CineApp)
         self.after(100, lambda: self.app.centrar_ventana(self))  
 
-        # Cargar y mostrar la imagen de la película (redimensionada)
         imagen_path = pelicula["imagen"]
         try:
             imagen = Image.open(imagen_path)
@@ -36,12 +33,10 @@ class PreviewPelicula(tk.Toplevel):
         except FileNotFoundError:
             ttk.Label(self, text="Imagen no encontrada", style="Preview.TLabel").pack(pady=10)
 
-        # Mostrar detalles de la película
         ttk.Label(self, text=f"Título: {pelicula['titulo']}", style="Preview.TLabel").pack()
         ttk.Label(self, text=f"Género: {pelicula['genero']}", style="Preview.TLabel").pack()
         ttk.Label(self, text=f"Duración: {pelicula['duracion']}", style="Preview.TLabel").pack()
 
-        # Sinopsis con scrollbar si es necesario
         frame_sinopsis = ttk.Frame(self)
         frame_sinopsis.pack(pady=10, fill="both", expand=True)  
 
@@ -60,5 +55,4 @@ class PreviewPelicula(tk.Toplevel):
         label_sinopsis = ttk.Label(frame_interno_sinopsis, text=f"Sinopsis: {pelicula['sinopsis']}", style="Preview.TLabel", wraplength=ancho_ventana - 60)
         label_sinopsis.pack(pady=10)
 
-        # Crear botón "Volver al Menú"
-        ttk.Button(self, text="Volver al Menú", command=self.app.show_menu).grid(row=4, column=0, columnspan=len(self.peliculas), pady=20)
+        ttk.Button(self, text="Volver al Menú", command=self.app.open_menu_principal).pack(pady=20)

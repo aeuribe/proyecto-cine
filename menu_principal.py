@@ -15,6 +15,7 @@ class MenuPrincipal(tk.Toplevel):
 
     def button_click(self, option):  # Método button_click movido aquí
         if option == "Cartelera y Reserva":
+            self.withdraw()
             self.master.show_cartelera()
         else:
             print(f"Botón '{option}' presionado")
@@ -35,3 +36,14 @@ class MenuPrincipal(tk.Toplevel):
 
         footer_label = ttk.Label(self, text="© 2024 Cine Ejemplo", font=("Helvetica", 10))
         footer_label.pack(side=tk.BOTTOM, pady=10)
+
+    def on_closing(self):
+        self.destroy()
+        self.master.deiconify()
+
+    if __name__ == "__main__":
+        app = tk.Tk()
+        style = ttk.Style(app)
+        style.theme_use("clam")
+
+        app.mainloop()
