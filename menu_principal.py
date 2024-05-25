@@ -2,20 +2,20 @@ import tkinter as tk
 from tkinter import ttk
 
 class MenuPrincipal(tk.Toplevel):
-    def __init__(self, master, app, style):
+    def __init__(self, master, style):
         super().__init__(master)
         self.title("Menú de Cine")
         self.geometry("800x600")
         self.configure(bg="#222222")
 
         self.style = style
-        self.app = app  # Guardar una referencia a la instancia de CineApp
+        self.master = master  # Guardar una referencia a la instancia de CineApp
 
         self.create_widgets()
 
     def button_click(self, option):  # Método button_click movido aquí
         if option == "Cartelera y Reserva":
-            self.app.show_cartelera()
+            self.master.show_cartelera()
         else:
             print(f"Botón '{option}' presionado")
 
