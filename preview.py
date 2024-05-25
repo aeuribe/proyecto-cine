@@ -16,7 +16,7 @@ class PreviewPelicula(tk.Toplevel):
         self.style.configure("Preview.TLabel", font=("Helvetica", 14), wraplength=400, background="#222222", foreground="#EEEEEE")
         self.style.configure("TButton", font=("Helvetica", 16, "bold"), background="#333333", foreground="#FF0000")
     
-        ancho_ventana = 500
+        ancho_ventana = 800
         alto_ventana = 600
         self.geometry(f"{ancho_ventana}x{alto_ventana}")
 
