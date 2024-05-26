@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
+import dataBase as db
 
 class Cartelera(tk.Toplevel):
     def __init__(self, master, app, style):
@@ -12,11 +13,7 @@ class Cartelera(tk.Toplevel):
         self.geometry("800x600")
         self.configure(bg="#222222")
 
-        self.peliculas = [
-            {"titulo": "Kung Fu Panda 4 (ESP)", "imagen": "imagenes/kung_fu_panda_4.jpg", "genero": "Acción/Comedia", "duracion": "1h 45min", "sinopsis": "Po debe enfrentar un nuevo desafío cuando un villano llamado El pavo real amenaza con robar el chi de todos los maestros de kung fu."},
-            {"titulo": "Bufón (ESP)", "imagen": "imagenes/bufon.jpg", "genero": "Drama/Crimen", "duracion": "2h 12min", "sinopsis": "Arthur Fleck es un hombre ignorado por la sociedad que encuentra su camino como el criminal y payaso psicópata Joker."},
-            {"titulo": "Amigos Imaginarios (ESP)", "imagen": "imagenes/amigos_imaginarios.jpg", "genero": "Fantasía/Aventura", "duracion": "1h 50min", "sinopsis": "Un niño solitario se hace amigo de un dragón imaginario, pero pronto descubre que no es tan imaginario como pensaba."}
-        ]
+        self.peliculas = db.listarPelicular()
 
         self.create_widgets()
         self.protocol("WM_DELETE_WINDOW", self.on_closing)

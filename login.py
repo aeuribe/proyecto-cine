@@ -47,12 +47,14 @@ class LoginApp(tk.Tk):
         db.createDataBase()
         username = self.username_entry.get()
         password = self.password_entry.get()
+        user = db.validarUsers(username, password)
 
-        if db.validarUsers(username, password):
+        if user:
             messagebox.showinfo("Login", "Login successful")
             self.open_menu_principal()
         else:
             messagebox.showerror("Login", "Invalid username or password")
+
 
     def open_menu_principal(self):
         self.withdraw()
@@ -80,9 +82,9 @@ class LoginApp(tk.Tk):
 
         ventana.geometry(f"+{x}+{y}")
 
-    def mostrar_asientos_disponibles(self):
+    def mostrar_asientos_disponibles(self, pelicula):
         #self.withdraw()
-        asientos_disponibles = AsientosDisponibles(self)
+        asientos_disponibles = AsientosDisponibles(self, pelicula)
         asientos_disponibles.protocol("WM_DELETE_WINDOW", self.on_closing)
 
 

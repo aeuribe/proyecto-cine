@@ -1,4 +1,11 @@
 import sqlite3 as sql
+import os
+
+def eliminarBaseDatos():
+    if os.path.exists('cine.db'):
+        os.remove('cine.db')
+    else:
+        print("La base de datos no existe")
 
 def createDataBase():
     conn = sql.connect('cine.db') # Crea la conexion a la base de datos
@@ -19,18 +26,12 @@ def createTable():
     cursor.execute(
         ''' CREATE TABLE pelicula(  
           id_pelicula INTEGER PRIMARY KEY AUTOINCREMENT,
-          nombre TEXT,
+          titulo TEXT,
           genero TEXT,
           duracion TEXT,
-          descripcioN TEXT
-        )''')
-    
-    cursor.execute(
-        ''' CREATE TABLE sala( 
-          id_sala INTEGER PRIMARY KEY AUTOINCREMENT,
-          nombre TEXT,
-          id_pelicula INTEGER,
-          FOREIGN KEY (id_pelicula) REFERENCES pelicula(id_pelicula)
+          sinopsis TEXT,
+          imagen TEXT,
+          sala TEXT
         )''')
     
     cursor.execute(
@@ -39,10 +40,8 @@ def createTable():
           fila TEXT,
           columna TEXT,
           reserva BOOLEAN,
-          id_sala INTEGER,
-          id_user INTEGER,
-          FOREIGN KEY(id_user) REFERENCES user(id_user),
-          FOREIGN KEY(id_sala) REFERENCES sala(id_sala)
+          id_pelicula INTEGER,
+          FOREIGN KEY(id_pelicula) REFERENCES pelicula(id_pelicula)
         )''')
     
     cursor.execute(
@@ -90,6 +89,52 @@ def validarUsers(username, password):
     else:
         conn.close()
         return False
+    
+def insertarPelicula():
+    conn = createDataBase()
+    cursor = conn.cursor()
+
+    cursor.executemany(
+        ''' INSERT INTO pelicula(titulo, genero, duracion, sinopsis,imagen, sala) VALUES(?,?,?,?,?,?)''',
+        [
+            ('Kung fu panda 4 (esp)', 'Acción/comedia', '1:45m', 'Sigue a Po en sus aventuras por la antigua china, donde su amor por el kung fu solo es superado por su amor por la comida.','imagenes/kung_fu_panda_4.jpg', 'Sala 1'),
+
+            ('El bufón (esp)', 'Fantasia', '2h 39m', 'Un malevolo ser conocido como el Bufon aterroriza a los habitantes de un peque�o pueblo en la noche de halloween, incluyendo a dos hermanas separadas que deben unirse paraencontrar la manera de derrotar esta entidad.', 'imagenes/bufon.jpg','Sala 2'),
+
+            ('Amigos imaginarios (esp)', 'Drama', '2h 55m', 'Sigue a una nina que pasa por una experiencia dificil y entonces empieza a ver a los amigos imaginarios de todo el mundo que se han quedado atras cuando sus amigos de la vida real han crecido', 'imagenes/amigos_imaginarios.jpg','Sala 3')
+        ]
+    )
+    
+    conn.commit()
+    conn.close()
+
+def listarPelicular():
+    conn = createDataBase()
+    conn.row_factory = sql.Row  # Esto hará que la consulta devuelva un diccionario
+    cursor = conn.cursor()
+    cursor.execute(
+        ''' SELECT * FROM pelicula '''
+        )
+    peliculas = cursor.fetchall()
+    conn.close()
+    lista_peliculas = [dict(pelicula) for pelicula in peliculas]
+    return lista_peliculas
+
+def reservaButaca(fila, columna, reserva, id_pelicula):
+    conn = createDataBase()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        ''' INSERT INTO butaca(fila, columna, reserva, id_pelicula) VALUES(?,?,?,?)''', (fila, columna, reserva, id_pelicula)
+        )
+    
+    conn.commit()
+    conn.close()
 
 if __name__ == '__main__':
-    print(validarUsers('user2', '123'))
+    #eliminarBaseDatos()
+    #createTable()
+    #insertUser()
+    #insertarPelicula()
+    #listarPelicular()
+    pass

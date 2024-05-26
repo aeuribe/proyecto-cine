@@ -1,8 +1,10 @@
 import tkinter as tk
+import dataBase as db
 
 class AsientosDisponibles(tk.Toplevel):
-    def __init__(self, master):
+    def __init__(self, master, pelicula):
         super().__init__(master)
+        self.pelicula = pelicula
         self.title("Asientos Disponibles")
         self.geometry("800x600")  # Tamaño inicial
         self.configure(bg="#222222")
@@ -66,7 +68,7 @@ class AsientosDisponibles(tk.Toplevel):
         boton_guardar = tk.Button(
             botones_frame,
             text="Guardar",
-            command=self.guardar_asientos,
+            command=self.guardar_asientos(self.asientos,2, self.pelicula),
             bg="#333333",
             fg="white",
             font=("Helvetica", 16, "bold"),
@@ -99,10 +101,16 @@ class AsientosDisponibles(tk.Toplevel):
             # Si no es verde, cambiarlo a verde y letras negras
             boton_seleccionado.configure(bg="#00FF00", fg="black")
         print(f"Seleccionaste el asiento: {fila+1}-{columna+1}")
+        self.master.logica_guardar(fila+1, columna+1)
 
-    def guardar_asientos(self):
+    def guardar_asientos(self,fila, columna, pelicula):
         # Aquí puedes definir la funcionalidad que deseas para el botón "Guardar"
-        print("Guardando asientos seleccionados...")
+        print("fila",fila)
+        '''butaca = db.reservaButaca(fila+1, columna+1, True ,pelicula['id_pelicula'])
+        if butaca:
+            print("Asientos guardados correctamente")
+        else:
+            print("Error al guardar los asientos")'''
 
 if __name__ == "__main__":
     root = tk.Tk()

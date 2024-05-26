@@ -40,8 +40,10 @@ class PreviewPelicula(tk.Toplevel):
         ttk.Label(self, text=f"Título: {pelicula['titulo']}", style="Preview.TLabel").pack(pady=5)
         ttk.Label(self, text=f"Género: {pelicula['genero']}", style="Preview.TLabel").pack(pady=5)
         ttk.Label(self, text=f"Duración: {pelicula['duracion']}", style="Preview.TLabel").pack(pady=5)
+        ttk.Label(self, text=f"Sinopsis: {pelicula['sinopsis']}", style="Preview.TLabel").pack(pady=5)
+        ttk.Label(self, text=f" {pelicula['sala']}", style="Preview.TLabel").pack(pady=5)
 
-        ttk.Button(self, text="Reservar", command=self.master.mostrar_asientos_disponibles, style="TButton").pack(side="left", padx=5, pady=10)
+        ttk.Button(self, text="Reservar", command=lambda p=pelicula: self.master.mostrar_asientos_disponibles(p), style="TButton").pack(side="left", padx=5, pady=10)
         ttk.Button(self, text="Cerrar", command=self.withdraw, style="TButton").pack(side="right", padx=5, pady=10)
 
 
