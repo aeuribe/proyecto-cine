@@ -2,7 +2,7 @@ import sqlite3 as sql
 import os
 
 def eliminarBaseDatos():
-    if os.path.exists('cine.db'):
+    if os.path.exists('./cine.db'):
         os.remove('cine.db')
     else:
         print("La base de datos no existe")
