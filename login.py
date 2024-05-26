@@ -6,6 +6,7 @@ from cartelera_cancelar import CarteleraCan
 from preview import PreviewPelicula
 from asientos_disponibles import AsientosDisponibles
 import dataBase as db
+from factura import FacturaWindow
 
 class LoginApp(tk.Tk):
     def __init__(self):
@@ -97,6 +98,11 @@ class LoginApp(tk.Tk):
         #self.withdraw()
         asientos_disponibles = AsientosDisponibles(self, pelicula, 1)
         asientos_disponibles.protocol("WM_DELETE_WINDOW", self.on_closing)
+
+    def show_factura_cliente(self):
+        self.withdraw()
+        factura_cliente = FacturaWindow(self)
+        factura_cliente.protocol("WM_DELETE_WINDOW", self.on_closing)
 
 
     def on_closing(self):

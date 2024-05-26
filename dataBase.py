@@ -160,7 +160,17 @@ def obtenerAsientosReservados(id_pelicula):
     conn.close()
     return asientos_reservados
 
+def obtener_peliculas_y_asientos():
+    conn = createDataBase()
+    cursor = conn.cursor()
 
+    cursor.execute('''SELECT pelicula.id_pelicula, pelicula.titulo, butaca.fila, butaca.columna
+                      FROM pelicula
+                      JOIN butaca ON pelicula.id_pelicula = butaca.id_pelicula
+                      WHERE butaca.reserva = 1''')
+
+    # Obtener los resultados de la consulta y devolverlos como una lista de tuplas
+    return cursor.fetchall()
 
 if __name__ == '__main__':
     #eliminarBaseDatos()

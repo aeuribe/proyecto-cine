@@ -20,6 +20,9 @@ class MenuPrincipal(tk.Toplevel):
         elif option == "Cancelar el Asiento":
             self.withdraw()
             self.master.show_cancelar_asiento()
+        elif option == "Factura del Cliente":
+            self.withdraw()
+            self.master.show_factura_cliente()
         else:
             print(f"Botón '{option}' presionado")
 
