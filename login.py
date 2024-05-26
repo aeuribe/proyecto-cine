@@ -98,6 +98,11 @@ class LoginApp(tk.Tk):
         asientos_disponibles = AsientosDisponibles(self, pelicula, 1)
         asientos_disponibles.protocol("WM_DELETE_WINDOW", self.on_closing)
 
+    def show_factura_cliente(self):
+        self.withdraw()
+        factura_cliente = FacturaCliente(self, self.style)
+        factura_cliente.protocol("WM_DELETE_WINDOW", self.on_closing)
+
 
     def on_closing(self):
         self.destroy()
