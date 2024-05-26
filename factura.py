@@ -75,6 +75,7 @@ class FacturaWindow(tk.Toplevel):
             else:
                 messagebox.showinfo("Confirmación", f"Compra procesada!")
                 # Aquí puedes agregar la lógica para procesar el pago según el método seleccionado
+                self.master.open_menu_principal()
                 self.destroy()
         else:
             messagebox.showwarning("Advertencia", "Por favor, seleccione un método de pago")
