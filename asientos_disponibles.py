@@ -3,9 +3,10 @@ from tkinter import messagebox
 import dataBase as db
 
 class AsientosDisponibles(tk.Toplevel):
-    def __init__(self, master, pelicula):
+    def __init__(self, master, pelicula, modo):
         super().__init__(master)
         self.pelicula = pelicula
+        self.modo = modo
         self.title("Asientos Disponibles")
         self.geometry("800x600")  # Tamaño inicial
         self.configure(bg="#222222")
@@ -14,7 +15,6 @@ class AsientosDisponibles(tk.Toplevel):
         # Obtener los asientos reservados desde la base de datos
         reservados = db.obtenerAsientosReservados(self.pelicula['id_pelicula'])
         self.asientos_reservados = [(int(fila), int(columna)) for fila, columna in reservados]
-
 
         self.create_widgets()
 
@@ -40,46 +40,25 @@ class AsientosDisponibles(tk.Toplevel):
                     etiqueta_columna = tk.Label(self.asientos_frame, text=f"{j+1}", bg="#222222", fg="white", font=("Helvetica", 16, "bold"))
                     etiqueta_columna.grid(row=0, column=j+1, padx=5, pady=5, sticky="nsew")
 
-                # Verificar si el asiento está reservado
-                print("Asientos reservados:")
-                for asiento in self.asientos_reservados:
-                    print(f"asiento de la bd: {asiento}")               
                 asiento_actual = (i + 1, j + 1)
-                if asiento_actual in self.asientos_reservados:
-                    print(f"asiento_actual: {asiento_actual}")
-                    boolean = True  # Rojo para asientos reservados
-                else:
-                    boolean = False  # Color original para asientos disponibles
-                print(f"asiento actual de la iteracion: {asiento_actual}")
+                boolean = asiento_actual in self.asientos_reservados
 
-                if boolean:
-                    boton_asiento = tk.Button(
-                        self.asientos_frame,
-                        text=f"{i+1}-{j+1}",
-                        command=lambda row=i, col=j: self.seleccionar_asiento(row, col),
-                        bg="#FF0000",
-                        fg="black",
-                        font=("Helvetica", 16, "bold"),
-                        bd=0,
-                        relief=tk.FLAT
-                    )
-                else:
-                    boton_asiento = tk.Button(
-                        self.asientos_frame,
-                        text=f"{i+1}-{j+1}",
-                        command=lambda row=i, col=j: self.seleccionar_asiento(row, col),
-                        bg="#CCCCCC",
-                        fg="green",
-                        font=("Helvetica", 16, "bold"),
-                        bd=0,
-                        relief=tk.FLAT
-                    )                   
-
+                boton_asiento = tk.Button(
+                    self.asientos_frame,
+                    text=f"{i+1}-{j+1}",
+                    command=lambda row=i, col=j: self.seleccionar_asiento(row, col),
+                    bg="#FF0000" if boolean else "#CCCCCC",
+                    fg="black" if boolean else "green",
+                    font=("Helvetica", 16, "bold"),
+                    bd=0,
+                    relief=tk.FLAT
+                )
+                
                 boton_asiento.grid(row=i+1, column=j+1, padx=5, pady=5, sticky="nsew")
                 fila.append(boton_asiento)
             self.asientos.append(fila)
 
-        # Frame para los botones "Cerrar" y "Guardar"
+        # Frame para los botones "Cerrar" y "Guardar" / "Cancelar asiento"
         botones_frame = tk.Frame(self, bg="#222222")
         botones_frame.pack(pady=10)
 
@@ -96,18 +75,32 @@ class AsientosDisponibles(tk.Toplevel):
         )
         boton_cerrar.pack(side=tk.LEFT, padx=10)
 
-        # Botón "Guardar"
-        boton_guardar = tk.Button(
-            botones_frame,
-            text="Guardar",
-            command=self.guardar_asientos,
-            bg="#333333",
-            fg="white",
-            font=("Helvetica", 16, "bold"),
-            bd=0,
-            relief=tk.FLAT
-        )
-        boton_guardar.pack(side=tk.LEFT, padx=10)
+        if self.modo == 1:
+            # Botón "Guardar"
+            boton_guardar = tk.Button(
+                botones_frame,
+                text="Guardar",
+                command=self.guardar_asientos,
+                bg="#333333",
+                fg="white",
+                font=("Helvetica", 16, "bold"),
+                bd=0,
+                relief=tk.FLAT
+            )
+            boton_guardar.pack(side=tk.LEFT, padx=10)
+        else:
+            # Botón "Cancelar asiento"
+            boton_cancelar = tk.Button(
+                botones_frame,
+                text="Cancelar asiento",
+                command=self.cancelar_asientos,
+                bg="#333333",
+                fg="white",
+                font=("Helvetica", 16, "bold"),
+                bd=0,
+                relief=tk.FLAT
+            )
+            boton_cancelar.pack(side=tk.LEFT, padx=10)
 
         self.configurar_expansion()
 
@@ -125,20 +118,16 @@ class AsientosDisponibles(tk.Toplevel):
 
     def seleccionar_asiento(self, fila, columna):
         boton_seleccionado = self.asientos[fila][columna]
-        # Comprobar el color de fondo actual del botón
         if boton_seleccionado.cget("bg") == "#00FF00":
-            # Si es verde, cambiarlo al color original y eliminarlo de los seleccionados
             boton_seleccionado.configure(bg="#CCCCCC", fg="green")
-            self.asientos_seleccionados.remove((fila+1, columna+1))
+            self.asientos_seleccionados.remove((fila + 1, columna + 1))
         else:
-            # Si no es verde, cambiarlo a verde y letras negras y añadirlo a los seleccionados
             boton_seleccionado.configure(bg="#00FF00", fg="black")
-            self.asientos_seleccionados.append((fila+1, columna+1))
-        print(f"Seleccionaste el asiento: {fila+1}-{columna+1}")
+            self.asientos_seleccionados.append((fila + 1, columna + 1))
+        print(f"Seleccionaste el asiento: {fila + 1}-{columna + 1}")
         print(f"Asientos seleccionados: {self.asientos_seleccionados}")
 
     def guardar_asientos(self):
-        # Aquí puedes definir la funcionalidad que deseas para el botón "Guardar"
         print(f"Asientos seleccionados para guardar: {self.asientos_seleccionados}")
         print(f"Id de la pelicula: {self.pelicula['id_pelicula']}")
 
@@ -160,7 +149,30 @@ class AsientosDisponibles(tk.Toplevel):
             messagebox.showerror("Error", "Hubo un error al guardar algunos asientos")
 
 
+    def cancelar_asientos(self):
+        print(f"Asientos seleccionados para cancelar: {self.asientos_seleccionados}")
+        print(f"Id de la pelicula: {self.pelicula['id_pelicula']}")
+
+        exito = True
+
+        for fila, columna in self.asientos_seleccionados:
+            print(f"fila: {fila}, columna: {columna}")
+            try:
+                db.cancelarButaca(fila, columna, self.pelicula['id_pelicula'])
+                print(f"Asiento {fila}-{columna} cancelado correctamente")
+            except Exception as e:
+                print(f"Error al cancelar el asiento {fila}-{columna}: {e}")
+                exito = False
+                
+        if exito:
+            messagebox.showinfo("Éxito", "Asientos cancelados exitosamente")
+            self.withdraw()
+        else:
+            messagebox.showerror("Error", "Hubo un error al cancelar algunos asientos")
+
+
+
 if __name__ == "__main__":
     root = tk.Tk()
-    app = AsientosDisponibles(root, pelicula={'id_pelicula': 1, 'titulo': 'Kung Fu Panda 4'})
+    app = AsientosDisponibles(root, pelicula={'id_pelicula': 1, 'titulo': 'Kung Fu Panda 4'}, modo=2)
     app.mainloop()

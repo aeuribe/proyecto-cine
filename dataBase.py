@@ -140,6 +140,18 @@ def reservaButaca(fila, columna, reserva, id_pelicula):
     finally:
         conn.close()
 
+def cancelarButaca(fila, columna, id_pelicula):
+    try:
+        # Supongamos que utilizas SQLite
+        conn = createDataBase()
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM butaca WHERE fila = ? AND columna = ? AND id_pelicula = ?", (fila, columna, id_pelicula))
+        conn.commit()
+        conn.close()
+    except Exception as e:
+        print(f"Error al cancelar la butaca: {e}")
+        raise e
+
 def obtenerAsientosReservados(id_pelicula):
     conn = createDataBase()
     cursor = conn.cursor()

@@ -17,6 +17,9 @@ class MenuPrincipal(tk.Toplevel):
         if option == "Cartelera y Reserva":
             self.withdraw()
             self.master.show_cartelera()
+        elif option == "Cancelar el Asiento":
+            self.withdraw()
+            self.master.show_cancelar_asiento()
         else:
             print(f"Botón '{option}' presionado")
 

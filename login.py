@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from menu_principal import MenuPrincipal
 from cartelera import Cartelera
+from cartelera_cancelar import CarteleraCan
 from preview import PreviewPelicula
 from asientos_disponibles import AsientosDisponibles
 import dataBase as db
@@ -66,9 +67,19 @@ class LoginApp(tk.Tk):
         cartelera = Cartelera(self, self, self.style)
         cartelera.protocol("WM_DELETE_WINDOW", self.on_closing)
 
+    def show_cancelar_asiento(self):
+        self.withdraw()
+        cartelera = CarteleraCan(self, self, self.style)
+        cartelera.protocol("WM_DELETE_WINDOW", self.on_closing)
+
     def seleccionar_pelicula(self, pelicula):
         self.preview_pelicula = PreviewPelicula(self, pelicula, self.style, self)
         self.preview_pelicula.deiconify()
+
+    def seleccionar_pelicula_cancelar(self, pelicula):
+        asientos_disponibles = AsientosDisponibles(self, pelicula, 2)
+        asientos_disponibles.protocol("WM_DELETE_WINDOW", self.on_closing)
+        
 
     def centrar_ventana(self, ventana):
         ventana.update_idletasks()
@@ -84,7 +95,7 @@ class LoginApp(tk.Tk):
 
     def mostrar_asientos_disponibles(self, pelicula):
         #self.withdraw()
-        asientos_disponibles = AsientosDisponibles(self, pelicula)
+        asientos_disponibles = AsientosDisponibles(self, pelicula, 1)
         asientos_disponibles.protocol("WM_DELETE_WINDOW", self.on_closing)
 
 
