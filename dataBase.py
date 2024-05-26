@@ -121,15 +121,34 @@ def listarPelicular():
     return lista_peliculas
 
 def reservaButaca(fila, columna, reserva, id_pelicula):
+    try:
+        conn = createDataBase()
+        cursor = conn.cursor()
+
+        cursor.execute(
+            '''INSERT INTO butaca(fila, columna, reserva, id_pelicula) VALUES(?,?,?,?)''', (fila, columna, reserva, id_pelicula)
+        )
+        
+        conn.commit()
+        print(f"Asiento {fila}-{columna} guardado correctamente")
+        return True
+
+    except Exception as e:
+        print(f"Error al guardar el asiento {fila}-{columna}: {e}")
+        return False
+
+    finally:
+        conn.close()
+
+def obtenerAsientosReservados(id_pelicula):
     conn = createDataBase()
     cursor = conn.cursor()
-
-    cursor.execute(
-        ''' INSERT INTO butaca(fila, columna, reserva, id_pelicula) VALUES(?,?,?,?)''', (fila, columna, reserva, id_pelicula)
-        )
-    
-    conn.commit()
+    cursor.execute('''SELECT fila, columna FROM butaca WHERE id_pelicula = ? AND reserva = ?''', (id_pelicula, True))
+    asientos_reservados = cursor.fetchall()
     conn.close()
+    return asientos_reservados
+
+
 
 if __name__ == '__main__':
     #eliminarBaseDatos()

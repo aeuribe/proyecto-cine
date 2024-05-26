@@ -16,7 +16,7 @@ class PreviewPelicula(tk.Toplevel):
         self.style.configure("Preview.TLabel", font=("Helvetica", 14), wraplength=400, background="#222222", foreground="#EEEEEE")
         self.style.configure("TButton", font=("Helvetica", 16, "bold"), background="#333333", foreground="#800020")
         
-        self.minsize(800, 600)
+        self.minsize(600, 700)
 
         # Obtener el tamaño de la pantalla
         screen_width = self.winfo_screenwidth()
