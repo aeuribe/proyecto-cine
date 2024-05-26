@@ -75,17 +75,21 @@ def insertUser():
     conn.commit()
     conn.close()
 
-def leerUsers():
+def validarUsers(username, password):
     conn = createDataBase()
     cursor = conn.cursor()
 
     cursor.execute(
-        ''' SELECT * FROM user'''
+        ''' SELECT id_user FROM user where username = ? and password = ?''', (username,password)
         )
 
     users = cursor.fetchall()
-    print(users)
-    conn.close()
+    if users:
+        conn.close()
+        return users[0][0]
+    else:
+        conn.close()
+        return False
 
 if __name__ == '__main__':
-    leerUsers()
+    print(validarUsers('user2', '123'))

@@ -3,7 +3,7 @@ from tkinter import ttk, messagebox
 from menu_principal import MenuPrincipal
 from cartelera import Cartelera
 from preview import PreviewPelicula
-import sqlite3
+import dataBase as db
 
 class LoginApp(tk.Tk):
     def __init__(self):
@@ -43,14 +43,11 @@ class LoginApp(tk.Tk):
         container.grid_columnconfigure(1, weight=3)
 
     def login(self):
+        db.createDataBase()
         username = self.username_entry.get()
         password = self.password_entry.get()
-        user1_prueba = "user1@gmail.com"
-        password_user1 = "user1"
-        user2_prueba = "user2@gmail.com"
-        password_user2 = "user2"
 
-        if (username == user1_prueba and password == password_user1) or (username == user2_prueba and password == password_user2):
+        if db.validarUsers(username, password):
             messagebox.showinfo("Login", "Login successful")
             self.open_menu_principal()
         else:
